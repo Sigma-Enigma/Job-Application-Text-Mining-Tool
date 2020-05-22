@@ -1,0 +1,62 @@
+---
+title: "Job Application Text Mining Widget"
+output: html_notebook
+---
+
+
+The purpose of this widget is to analyze any job application and extract the most common keywords to help optimize resume to score well on automated resume filtering algorithms.
+
+```{r}
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(tidyselect)
+library(broom)
+library(rlang)
+```
+
+
+First we read in the single text document. Each document is first broken down into a new row for each non-breaking space as indicated by " \xa0 " . Note: stringsAsFactors must be FALSE in order for the data format to work with tibble
+
+```{r}
+setwd("~/Downloads")
+text <- read.table(file="Weedmaps_GIS.txt", header = FALSE, sep = "\xa0", stringsAsFactors = FALSE)
+```
+
+
+Now we will transform it to the tidytext format by using tibble to shape it into a dataframe
+```{r}
+dftext <- tibble(line = 1:dim(text)[1], text = text$V1)
+
+```
+
+
+Next we will tokenize the remaining lists, until we reach tidytext format as shown below
+```{r}
+dftext <- dftext %>%
+  unnest_tokens(word, text)
+```
+
+
+Finally we can remove stopwords to clean up the corpus
+
+```{r}
+data("stop_words")
+tidy_text <- dftext %>% 
+  anti_join(stop_words)
+```
+
+
+Now we can do some descriptive analysis
+
+```{r}
+library(ggplot2)
+tidy_text %>%
+  count(word, sort = TRUE) %>%
+  filter(n > 1) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+```
