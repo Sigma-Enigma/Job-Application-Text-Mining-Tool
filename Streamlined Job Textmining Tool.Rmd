@@ -19,8 +19,8 @@ library(rlang)
 First we read in the single text document. Each document is first broken down into a new row for each non-breaking space as indicated by " \xa0 " . Note: stringsAsFactors must be FALSE in order for the data format to work with tibble
 
 ```{r}
-setwd("~/Downloads")
-text <- read.table(file="Weedmaps_GIS.txt", header = FALSE, sep = "\xa0", stringsAsFactors = FALSE)
+setwd("/Users/ryanarellano/Downloads") 
+text <- read.table(file="SCE_DS_Advisor.txt", header = FALSE, sep = "\xa0", quote = "", stringsAsFactors = FALSE) # replace your file name here!
 ```
 
 
